@@ -4,6 +4,7 @@ import asyncio
 from redis_helper import redis_helper
 from pydantic import BaseModel
 import time
+import sys
 
 async def start_updating():
     while True:
@@ -16,16 +17,16 @@ async def start_updating():
 async def update():
     start_time = time.time()
     zones = db.get_all_zones_from_db()
+    sys.getsizeof(zones)
     print(f"Loading zones from database took {time.time() - start_time}s")
-    with redis_helper.get_resource() as r:
         # Count vehicles
         # pipe = r.pipeline()
-        for zone in zones:
-            result = await tile38.get_vehicles(zone.area)
-            if result == None:
-                continue
-            test = count_modes(result=result)
-            print(test)
+    result = await tile38.get_vehicles_per_area(zones)
+    if result == None:
+        return
+    print(result[0])
+            #test = count_modes(result=result)
+            #print(test)
 #             pipe.get("stop:" + stop.stop_id + ":status")
 #         res = pipe.execute()
 

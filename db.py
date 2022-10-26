@@ -22,7 +22,7 @@ def query_all_zones(cur):
             'properties',  json_build_object()
         ) as area, municipality
         FROM zones
-        WHERE zone_type IN ('municipality', 'residential_area', 'country', 'custom');
+        WHERE zone_type IN ('custom');
     """
     cur.execute(stmt)
     return cur.fetchall()
