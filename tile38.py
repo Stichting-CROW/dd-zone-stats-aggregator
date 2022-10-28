@@ -6,9 +6,13 @@ import time
 async def get_vehicles_per_area(zones):
     with tile38_helper.get_resource() as tile38_client:
         print(len(zones))
+        result = []
         for i in range(0, len(zones), 100):
             print(i)
-            get_per_thousand(tile38_client, zones[i:i + 100])
+            result.extend(
+                get_per_thousand(tile38_client, zones[i:i + 100])
+            )
+        return result
         
 
 def get_per_thousand(tile38_client, zones):
@@ -17,6 +21,6 @@ def get_per_thousand(tile38_client, zones):
     for zone in zones:
         if type(zone.area.geometry) is Polygon:
             pipe.execute_command('WITHIN', 'vehicles', 'OBJECT', zone.area.geometry.json())
-    pipe.execute()
+    result = pipe.execute()
     print(f"Tile38 took {time.time() - start_time}s")
-    return 
+    return result

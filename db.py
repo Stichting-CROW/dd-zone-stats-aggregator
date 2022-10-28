@@ -27,6 +27,15 @@ def query_all_zones(cur):
     cur.execute(stmt)
     return cur.fetchall()
 
+def execute(stmt):
+    with db_helper.get_resource() as (cur, conn):
+        try:
+            cur.execute(stmt)
+            conn.commit()
+        except Exception as e:
+            conn.rollback()
+            print(e)
+
 def convert_zone(row):
     return zone.Zone(
         zone_id=row["zone_id"],

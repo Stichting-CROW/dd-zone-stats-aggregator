@@ -10,13 +10,15 @@ class DBHelper:
     def get_conn_str(self):
         # Initialisation
         conn_str = "dbname=deelfietsdashboard"
-        if "dev" in os.environ:
+        if os.getenv('DEV') == 'true':
             conn_str = "dbname=deelfietsdashboard4"
 
-        if "ip" in os.environ:
-            conn_str += " host={} ".format(os.environ['ip'])
-        if "password" in os.environ:
-            conn_str += " user=deelfietsdashboard password={}".format(os.environ['password'])
+        if "DB_HOST" in os.environ:
+            conn_str += " host={} ".format(os.environ['DB_HOST'])
+        if "DB_USER" in os.environ:
+            conn_str += " user={}".format(os.environ['DB_USER'])
+        if "DB_PASSWORD" in os.environ:
+            conn_str += " password={}".format(os.environ['DB_PASSWORD'])
         return conn_str
 
     def initialize_connection_pool(self):
