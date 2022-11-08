@@ -61,6 +61,15 @@ Or put these ^ in a .env file and do `source .env`.
 
     pip install -r requirements.txt
 
+- Install postgresql-14
+https://www.postgresql.org/download/linux/debian/
+
+- Install postgresql-server-dev and other dev tools.
+apt-get install postgresql-server-dev-14 libkrb5-dev cmake
+
+- Install timescaledb
+https://docs.timescale.com/install/latest/self-hosted/installation-source/
+
 ## How to run
 
 Start postgres.
