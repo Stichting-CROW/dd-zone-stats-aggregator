@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zone-stats-aggregator
+spec:
+  selector:
+    matchLabels:
+      app: zone-stats-aggregator
+  template:
+    metadata:
+      labels:
+        app: zone-stats-aggregator
+    spec:
+      containers:
+      - name: zone-stats-aggregator
+        image: registry.gitlab.com/bikedashboard/zone-stats-aggregator:0.2
+        env:
+          - name: DB_HOST
+            value: 10.133.75.95
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: password
+                name: db-password-deelfietsdashboard
+          - name: DB_USER
+            value: deelfietsdashboard
+          - name: TIMESCALE_DB_HOST
+            value: 10.133.137.239
+          - name: TIMESCALE_DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: password
+                name: db-password-timescaledb-dashboarddeelmobiliteit
+          - name: TIMESCALE_DB_USER
+            value: dd_timescale   
+          - name: REDIS_URL
+            value: 10.133.75.95
+          - name: TILE38_URL
+            value: tile38
+        resources:
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"

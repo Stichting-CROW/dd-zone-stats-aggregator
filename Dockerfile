@@ -1,4 +1,4 @@
-FROM python:3.9-slim as builder
+FROM python:3.11-slim as builder
 
 RUN apt-get update && \
     apt-get -y install libpq-dev gcc
@@ -9,7 +9,7 @@ ENV PATH="/opt/venv/bin:$PATH"
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 
-FROM python:3.9-slim
+FROM python:3.11-slim
 
 RUN apt-get update &&  \
     apt-get install -y libpq-dev && \
@@ -21,7 +21,7 @@ ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1\
     PATH="/opt/venv/bin:$PATH"
 
-COPY . /srv/microhubs-controller
-WORKDIR /srv/microhubs-controller
+COPY . /srv/zone-stats-aggregator
+WORKDIR /srv/zone-stats-aggregator
 
 CMD ["python", "./main.py"]
