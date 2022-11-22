@@ -18,7 +18,7 @@ def query_all_zones(cur):
         -- this 30m should only be added in case of custom zones. 
         json_build_object(
             'type',       'Feature',
-            'geometry',   ST_AsGeoJSON( ST_GeometryN(area, 1)::geography)::json,
+            'geometry',   ST_AsGeoJSON( ST_Buffer(ST_GeometryN(area, 1)::geography, 30))::json,
             'properties',  json_build_object()
         ) as area, municipality
         FROM zones
@@ -26,6 +26,36 @@ def query_all_zones(cur):
     """
     cur.execute(stmt)
     return cur.fetchall()
+
+def get_all_trips_that_started_a_hour_ago(cur, timestamp):
+    stmt = """
+        SELECT trips.trip_id, trips.system_id, 
+        ST_Y(trips.start_location) as lat, ST_X(trips.start_location) as lng, 
+        form_factor 
+        FROM trips 
+        JOIN vehicle_type 
+        USING (vehicle_type_id) 
+        WHERE start_time >= %(timestamp)s 
+        AND start_time <= %(timestamp)s + '5 MINUTES';
+    """
+    cur.execute(stmt, {"timestamp": timestamp})
+    return cur.fetchall()
+
+
+def get_all_trips_that_ended_a_hour_ago(cur, timestamp):
+    stmt = """
+        SELECT trips.trip_id, trips.system_id, 
+        ST_Y(trips.end_location) as lat, ST_X(trips.end) as lng, 
+        form_factor 
+        FROM trips 
+        JOIN vehicle_type 
+        USING (vehicle_type_id) 
+        WHERE end_time >= %s 
+        AND end_time <= %s + '5 MINUTES';
+    """
+    cur.execute(stmt, {"timestamp": timestamp})
+    return cur.fetchall()
+
 
 def execute(stmt):
     with db_helper.get_resource() as (cur, conn):
@@ -44,3 +74,5 @@ def convert_zone(row):
         # num_vehicles_disabled: Dict[str, int]
         # num_places_available: Dict[str, int]
     )
+
+
