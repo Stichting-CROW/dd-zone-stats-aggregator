@@ -38,7 +38,7 @@ def get_all_trips_that_started_at_timestamp(timestamp):
                 JOIN vehicle_type 
                 USING (vehicle_type_id) 
                 WHERE start_time >= %(timestamp)s 
-                AND start_time <= %(timestamp)s + '5 MINUTES';
+                AND start_time < %(timestamp)s + '5 MINUTES';
             """
             cur.execute(stmt, {"timestamp": timestamp})
             return cur.fetchall()
@@ -58,7 +58,7 @@ def get_all_trips_that_ended_at_timestamp(timestamp):
                 JOIN vehicle_type 
                 USING (vehicle_type_id) 
                 WHERE end_time >= %(timestamp)s 
-                AND end_time <= %(timestamp)s + '5 MINUTES';
+                AND end_time < %(timestamp)s + '5 MINUTES';
             """
             cur.execute(stmt, {"timestamp": timestamp})
             return cur.fetchall()
