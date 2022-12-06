@@ -27,34 +27,44 @@ def query_all_zones(cur):
     cur.execute(stmt)
     return cur.fetchall()
 
-def get_all_trips_that_started_a_hour_ago(cur, timestamp):
-    stmt = """
-        SELECT trips.trip_id, trips.system_id, 
-        ST_Y(trips.start_location) as lat, ST_X(trips.start_location) as lng, 
-        form_factor 
-        FROM trips 
-        JOIN vehicle_type 
-        USING (vehicle_type_id) 
-        WHERE start_time >= %(timestamp)s 
-        AND start_time <= %(timestamp)s + '5 MINUTES';
-    """
-    cur.execute(stmt, {"timestamp": timestamp})
-    return cur.fetchall()
+def get_all_trips_that_started_at_timestamp(timestamp):
+    with db_helper.get_resource() as (cur, conn):
+        try:
+            stmt = """
+                SELECT trips.trip_id, trips.system_id, 
+                ST_AsGeoJSON(trips.start_location)::json as location, 
+                form_factor 
+                FROM trips 
+                JOIN vehicle_type 
+                USING (vehicle_type_id) 
+                WHERE start_time >= %(timestamp)s 
+                AND start_time <= %(timestamp)s + '5 MINUTES';
+            """
+            cur.execute(stmt, {"timestamp": timestamp})
+            return cur.fetchall()
+        except Exception as e:
+            conn.rollback()
+            print(e)
 
 
-def get_all_trips_that_ended_a_hour_ago(cur, timestamp):
-    stmt = """
-        SELECT trips.trip_id, trips.system_id, 
-        ST_Y(trips.end_location) as lat, ST_X(trips.end) as lng, 
-        form_factor 
-        FROM trips 
-        JOIN vehicle_type 
-        USING (vehicle_type_id) 
-        WHERE end_time >= %s 
-        AND end_time <= %s + '5 MINUTES';
-    """
-    cur.execute(stmt, {"timestamp": timestamp})
-    return cur.fetchall()
+def get_all_trips_that_ended_at_timestamp(timestamp):
+    with db_helper.get_resource() as (cur, conn):
+        try:
+            stmt = """
+                SELECT trips.trip_id, trips.system_id, 
+                ST_AsGeoJSON(trips.end_location)::json as location,
+                form_factor 
+                FROM trips 
+                JOIN vehicle_type 
+                USING (vehicle_type_id) 
+                WHERE end_time >= %(timestamp)s 
+                AND end_time <= %(timestamp)s + '5 MINUTES';
+            """
+            cur.execute(stmt, {"timestamp": timestamp})
+            return cur.fetchall()
+        except Exception as e:
+            conn.rollback()
+            print(e)
 
 
 def execute(stmt):

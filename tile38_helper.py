@@ -11,7 +11,6 @@ class Tile38Helper:
         conn_str = "localhost"
         if "TILE38_URL" in os.environ:
             conn_str = os.getenv("TILE38_URL")
-
         return conn_str
 
     def initialize_connection(self):

@@ -30,8 +30,6 @@ class DBHelper:
 
 # Init normal db
 conn_str = "dbname=deelfietsdashboard"
-if os.getenv('DEV') == 'true':
-    conn_str = "dbname=deelfietsdashboard4"
 
 if "DB_HOST" in os.environ:
     conn_str += " host={} ".format(os.environ['DB_HOST'])
@@ -39,6 +37,8 @@ if "DB_USER" in os.environ:
     conn_str += " user={}".format(os.environ['DB_USER'])
 if "DB_PASSWORD" in os.environ:
     conn_str += " password={}".format(os.environ['DB_PASSWORD'])
+if "DB_PORT" in os.environ:
+    conn_str += " port={}".format(os.environ['DB_PORT'])
 
 db_helper = DBHelper(conn_str)
 
@@ -46,7 +46,7 @@ db_helper = DBHelper(conn_str)
 # Init normal db
 conn_str_timescale_db = "dbname=dashboardeelmobiliteit-timescaledb"
 if os.getenv('DEV') == 'true':
-    conn_str_timescale_db = "dbname=deelfietsdashboard4"
+    conn_str_timescale_db = "dbname=dashboardeelmobiliteit-timescaledb-dev"
 
 if "TIMESCALE_DB_HOST" in os.environ:
     conn_str_timescale_db += " host={} ".format(os.environ['TIMESCALE_DB_HOST'])
@@ -54,5 +54,7 @@ if "TIMESCALE_DB_USER" in os.environ:
     conn_str_timescale_db += " user={}".format(os.environ['TIMESCALE_DB_USER'])
 if "TIMESCALE_DB_PASSWORD" in os.environ:
     conn_str_timescale_db += " password={}".format(os.environ['TIMESCALE_DB_PASSWORD'])
+if "TIMESCALE_DB_PORT" in os.environ:
+    conn_str_timescale_db += " port={}".format(os.environ['TIMESCALE_DB_PORT'])
 
 timescale_db_helper = DBHelper(conn_str_timescale_db)
