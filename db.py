@@ -53,7 +53,10 @@ def get_all_trips_that_ended_at_timestamp(timestamp):
             stmt = """
                 SELECT trips.trip_id, trips.system_id, 
                 ST_AsGeoJSON(trips.end_location)::json as location,
-                ```
+                form_factor 
+                FROM trips 
+                JOIN vehicle_type 
+                USING (vehicle_type_id) 
                 WHERE end_time >= %(timestamp)s 
                 AND end_time < %(timestamp)s + '5 MINUTES';
             """
