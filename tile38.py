@@ -18,7 +18,7 @@ def get_vehicles_per_area_sub(tile38_client, zones):
     pipe = tile38_client.pipeline(transaction=False)
     for zone in zones:
         if type(zone.area.geometry) is Polygon:
-            pipe.execute_command('WITHIN', 'vehicles', 'OBJECT', zone.area.geometry.json())
+            pipe.execute_command('WITHIN', 'vehicles', 'LIMIT', '10000', 'OBJECT', zone.area.geometry.json())
     result = pipe.execute()
     print(f"Tile38 took  {time.time() - start_time}s")
     return result
@@ -50,8 +50,8 @@ def get_trips_per_area_sub(tile38_client, zones):
     pipe = tile38_client.pipeline(transaction=False)
     for zone in zones:
         if type(zone.area.geometry) is Polygon:
-            pipe.execute_command('WITHIN', 'start_location', 'OBJECT', zone.area.geometry.json())
-            pipe.execute_command('WITHIN', 'end_location', 'OBJECT', zone.area.geometry.json())
+            pipe.execute_command('WITHIN', 'start_location', 'LIMIT', '10000', 'OBJECT', zone.area.geometry.json())
+            pipe.execute_command('WITHIN', 'end_location', 'LIMIT', '10000', 'OBJECT', zone.area.geometry.json())
     result = pipe.execute()
     print(f"Tile38 took get_trips_per_area_sub {time.time() - start_time}s")
     return result
