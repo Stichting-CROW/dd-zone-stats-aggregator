@@ -62,6 +62,7 @@ async def update():
 
     start_measurement = datetime.now(timezone.utc)
     result = await tile38.get_vehicles_per_area(zones)
+    print(result)
     count_and_store_vehicles_stats(result, zones=zones, timestamp=start_measurement)
 
 async def import_trips_in_tile38(timestamp):

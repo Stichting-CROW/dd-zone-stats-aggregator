@@ -45,8 +45,6 @@ db_helper = DBHelper(conn_str)
 # Init timescaledb
 # Init normal db
 conn_str_timescale_db = f"dbname={os.getenv('TIMESCALE_DB_NAME')}"
-if os.getenv('DEV') == 'true':
-    conn_str_timescale_db = "dbname=dashboardeelmobiliteit-timescaledb-dev"
 
 if "TIMESCALE_DB_HOST" in os.environ:
     conn_str_timescale_db += " host={} ".format(os.environ['TIMESCALE_DB_HOST'])

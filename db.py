@@ -18,7 +18,7 @@ def query_all_zones(cur):
         -- this 30m should only be added in case of custom zones. 
         json_build_object(
             'type',       'Feature',
-            'geometry',   ST_AsGeoJSON( ST_Buffer(ST_GeometryN(area, 1)::geography, 30))::json,
+            'geometry',   ST_AsGeoJSON( ST_Buffer(ST_MakeValid(area)::geography, 30)::geometry)::json,
             'properties',  json_build_object()
         ) as area, municipality
         FROM zones
@@ -38,7 +38,8 @@ def get_all_trips_that_started_at_timestamp(timestamp):
                 JOIN vehicle_type 
                 USING (vehicle_type_id) 
                 WHERE start_time >= %(timestamp)s 
-                AND start_time < %(timestamp)s + '5 MINUTES';
+                AND start_time < %(timestamp)s + '5 MINUTES'
+                AND trips.trip_source = 'vehicles';
             """
             cur.execute(stmt, {"timestamp": timestamp})
             return cur.fetchall()
@@ -58,7 +59,8 @@ def get_all_trips_that_ended_at_timestamp(timestamp):
                 JOIN vehicle_type 
                 USING (vehicle_type_id) 
                 WHERE end_time >= %(timestamp)s 
-                AND end_time < %(timestamp)s + '5 MINUTES';
+                AND end_time < %(timestamp)s + '5 MINUTES'
+                AND trips.trip_source = 'vehicles';
             """
             cur.execute(stmt, {"timestamp": timestamp})
             return cur.fetchall()

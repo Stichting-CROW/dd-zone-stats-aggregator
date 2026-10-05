@@ -1,6 +1,6 @@
 import asyncio
 from tile38_helper import tile38_helper
-from geojson_pydantic import Feature, Polygon
+from geojson_pydantic import Feature, Polygon, MultiPolygon
 import time
 
 async def get_vehicles_per_area(zones):
@@ -17,7 +17,7 @@ def get_vehicles_per_area_sub(tile38_client, zones):
     start_time = time.time()
     pipe = tile38_client.pipeline(transaction=False)
     for zone in zones:
-        if type(zone.area.geometry) is Polygon:
+        if type(zone.area.geometry) is Polygon or type(zone.area.geometry) is MultiPolygon:
             pipe.execute_command('WITHIN', 'vehicles', 'LIMIT', '10000', 'OBJECT', zone.area.geometry.json())
     result = pipe.execute()
     print(f"Tile38 took  {time.time() - start_time}s")
@@ -49,7 +49,7 @@ def get_trips_per_area_sub(tile38_client, zones):
     start_time = time.time()
     pipe = tile38_client.pipeline(transaction=False)
     for zone in zones:
-        if type(zone.area.geometry) is Polygon:
+        if type(zone.area.geometry) is Polygon or type(zone.area.geometry) is MultiPolygon:
             pipe.execute_command('WITHIN', 'start_location', 'LIMIT', '10000', 'OBJECT', zone.area.geometry.json())
             pipe.execute_command('WITHIN', 'end_location', 'LIMIT', '10000', 'OBJECT', zone.area.geometry.json())
     result = pipe.execute()
